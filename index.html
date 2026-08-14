@@ -4,49 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fafafa" />
-    <title>Messages - SaveTheConvo</title>
+    <title>SaveTheConvo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="app-shell">
-      <main class="messages-layout">
-        <section class="chat-panel" aria-label="Conversation">
-          <header class="chat-header">
-            <button type="button" class="icon-button back-button" aria-label="Back to inbox">
-              <span aria-hidden="true">&lsaquo;</span>
-            </button>
-            <div id="chat-person" class="chat-person"></div>
-            <div class="chat-actions" aria-label="Conversation actions">
-              <button type="button" id="audio-call" class="icon-button" aria-label="Start audio call">
-                <span class="phone-icon" aria-hidden="true"></span>
-              </button>
-              <button type="button" id="video-call" class="icon-button" aria-label="Start video call">
-                <span class="video-icon" aria-hidden="true"></span>
-              </button>
-            </div>
-          </header>
-          <div id="chat-body" class="chat-body"></div>
-          <form id="message-form" class="message-composer">
-            <button type="button" class="composer-icon camera-button" aria-label="Open camera">
-              <span aria-hidden="true"></span>
-            </button>
-            <input id="message-input" type="text" placeholder="Message..." autocomplete="off" aria-label="Message text" />
-            <button type="button" class="composer-icon mic-button" aria-label="Record voice message">
-              <span class="mic-icon" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="composer-icon image-button" aria-label="Add photo">
-              <span class="image-icon" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="composer-icon sticker-button" aria-label="Add sticker">
-              <span aria-hidden="true">:)</span>
-            </button>
-            <button type="submit" id="send-button" class="send-button">Send</button>
-          </form>
-        </section>
-      </main>
+    <div class="app-shell app-shell-wide">
+      <aside class="sidebar">
+        <a class="brand" href="#home"><span class="brand-mark">+</span><span class="brand-name">Save<span>the</span>Convo</span></a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a class="nav-item" data-route="home" href="#home"><span class="nav-icon">⌂</span><span>Characters</span></a>
+          <a class="nav-item" data-route="history" href="#history"><span class="nav-icon message-glyph"></span><span>Past chats</span><span class="nav-count">5</span></a>
+          <a class="nav-item" data-route="discover" href="#discover"><span class="nav-icon nav-search-icon">⌕</span><span>Discover</span></a>
+        </nav>
+        <div class="sidebar-bottom">
+          <a class="nav-item" data-route="settings" href="#settings"><span class="nav-icon">⚙</span><span>Settings</span></a>
+          <a class="profile-link" href="#settings"><span class="avatar avatar-me">NC</span><span><strong>Nathan</strong><small>Free plan</small></span></a>
+        </div>
+      </aside>
+      <main id="app-view" class="app-view"></main>
     </div>
     <div id="toast" class="toast" role="status"></div>
     <script src="app.js"></script>

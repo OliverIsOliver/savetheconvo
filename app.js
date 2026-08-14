@@ -1,77 +1,63 @@
-const person = {
-  name: "Teresa Lai",
-  handle: "teresalai_",
-  initials: "TL",
-  avatarClass: "avatar-teresa",
-  online: true
-};
+const characters = [
+  { name: "Teresa Lai", handle: "teresalai_", initials: "TL", avatarClass: "avatar-teresa", role: "The spontaneous best friend", tone: "Warm, playful, and always ready with a plan.", tags: ["Friendly", "Playful"] },
+  { name: "Maya Chen", handle: "mayachen", initials: "MC", avatarClass: "avatar-maya", role: "The creative collaborator", tone: "Sharp ideas, thoughtful feedback, zero boring brainstorms.", tags: ["Creative", "Focused"] },
+  { name: "Jordan Ellis", handle: "jordan.e", initials: "JE", avatarClass: "avatar-jordan", role: "Your calm coach", tone: "Grounded perspective for whatever today brings.", tags: ["Supportive", "Calm"] },
+  { name: "Noah Rivera", handle: "noahr", initials: "NR", avatarClass: "avatar-noah", role: "The curious explorer", tone: "Ask a question. Get a story. Keep going.", tags: ["Curious", "Adventurous"] }
+];
 
 const messages = [
   { from: "them", text: "Best birthday spa retreat ever, amirite?! My face is glowing", time: "9:41 AM" },
   { from: "me", text: "My face too. Thanks again for everything. You are the best!", time: "9:43 AM" },
   { from: "them", text: "Anytime. Let me know if you want to link up again!", time: "1:41 PM", reaction: ":)" },
   { from: "me", text: "Lets def go again. Best spa in the city!", time: "1:43 PM" },
-  { from: "me", text: "Can you send the pic you took while we were there?", time: "1:44 PM", reaction: "👍", status: "Seen" }
+  { from: "me", text: "Can you send the pic you took while we were there?", time: "1:44 PM", reaction: "+1", status: "Seen" }
 ];
 
-const chatPerson = document.querySelector("#chat-person");
-const chatBody = document.querySelector("#chat-body");
-const messageForm = document.querySelector("#message-form");
-const messageInput = document.querySelector("#message-input");
+const appView = document.querySelector("#app-view");
 const toast = document.querySelector("#toast");
-const audioCallButton = document.querySelector("#audio-call");
-const videoCallButton = document.querySelector("#video-call");
-
-function avatarMarkup(className = "") {
-  return `<span class="avatar ${person.avatarClass} ${className}">${person.initials}</span>`;
-}
-
-function renderHeader() {
-  chatPerson.innerHTML = `${avatarMarkup()}<span><span class="chat-name">${person.name}</span><span class="chat-handle">@${person.handle}</span></span>`;
-}
-
-function renderMessages() {
-  chatBody.innerHTML = `<div class="date-divider">Today</div>` + messages.map((message) => `
-    <div class="message-row ${message.from === "me" ? "sent" : "received"}">
-      ${message.from === "them" ? avatarMarkup("message-avatar") : ""}
-      <div class="message-stack">
-        <span class="message-bubble">${message.text}</span>
-        ${message.reaction ? `<span class="message-reaction">${message.reaction}</span>` : ""}
-        ${message.status ? `<span class="message-status">${message.status}</span>` : ""}
-      </div>
-    </div>
-  `).join("");
-  chatBody.scrollTop = chatBody.scrollHeight;
-}
+const avatarMarkup = (character, className = "") => `<span class="avatar ${character.avatarClass} ${className}">${character.initials}</span>`;
+const addedBotHandles = new Set(JSON.parse(localStorage.getItem("savetheconvo-added-bots") || "[\"teresalai_\"]"));
 
 function showToast(message) {
   toast.textContent = message;
   toast.classList.add("visible");
-  window.clearTimeout(showToast.timeout);
-  showToast.timeout = window.setTimeout(() => toast.classList.remove("visible"), 1900);
+  clearTimeout(showToast.timeout);
+  showToast.timeout = setTimeout(() => toast.classList.remove("visible"), 2200);
 }
 
-function startCall(type) {
-  showToast(`${type} call UI is ready for the AI model hookup`);
+function renderShell(route) {
+  document.querySelectorAll("[data-route]").forEach((item) => item.classList.toggle("active", item.dataset.route === route));
 }
 
-messageInput.addEventListener("input", () => {
-  messageForm.classList.toggle("has-text", messageInput.value.trim().length > 0);
-});
+function renderHome() {
+  const addedBots = characters.filter((character) => addedBotHandles.has(character.handle));
+  appView.innerHTML = `<section class="inbox-workspace"><aside class="inbox-sidebar"><header class="inbox-top"><div class="account-switcher"><span class="instagram-mark">◎</span><h1>nathan.chin_</h1><span class="chevron">⌄</span></div><button class="icon-button" data-action="open-bot-picker" aria-label="Choose a bot">＋</button></header><label class="inbox-search"><span>⌕</span><input placeholder="Search" aria-label="Search chats" /></label><div class="story-strip">${characters.slice(0, 4).map((character) => `<button class="story-button ${addedBotHandles.has(character.handle) ? "added" : ""}" data-add-bot="${character.handle}">${avatarMarkup(character)}<small>${addedBotHandles.has(character.handle) ? "Added" : "Add"}</small></button>`).join("")}</div><div class="inbox-tabs"><button class="inbox-tab active">Messages</button><button class="inbox-tab">Requests</button></div><div class="conversation-list">${addedBots.length ? addedBots.map((character, index) => `<div class="conversation-wrap"><button class="conversation ${index === 0 ? "selected" : ""}" data-chat="${character.handle}">${avatarMarkup(character)}<span class="conversation-info"><span class="conversation-top"><span class="conversation-name">${character.name}</span><span class="conversation-time">${index + 1}h</span></span><span class="conversation-preview">${index === 0 ? "Lets def go again. Best spa in the city!" : character.role}</span></span>${index === 0 ? `<span class="unread-badge">1</span>` : ""}</button><button class="remove-bot" data-remove-bot="${character.handle}" aria-label="Remove ${character.name}">×</button></div>`).join("") : `<p class="empty-conversations">Choose a bot above to add it to your messages.</p>`}</div><button class="add-bot-link" data-action="open-bot-picker">＋ Choose bots to add</button></aside><section class="inbox-empty"><div class="empty-message-icon">➤</div><h2>Your messages</h2><p>Select a bot from your messages or choose one above to start chatting.</p><button class="button button-purple" data-action="open-bot-picker">Choose a bot</button></section></section>`;
+}
 
-messageForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const text = messageInput.value.trim();
-  if (!text) return;
-  messages.push({ from: "me", text, time: "Now", status: "Sent" });
-  messageInput.value = "";
-  messageForm.classList.remove("has-text");
-  renderMessages();
-  showToast("Message added to demo chat");
-});
+function renderHistory() {
+  const past = [characters[0], characters[1], characters[2], characters[3], { name: "Alex Morgan", handle: "alexm", initials: "AM", avatarClass: "avatar-alex" }];
+  appView.innerHTML = `<section class="page-view"><div class="page-heading"><div><span class="eyebrow">Your archive</span><h1>Past chats</h1><p>Pick up a conversation where you left off.</p></div><span class="plan-pill">Free · ${past.length}/5 used</span></div><div class="history-list">${past.map((person, index) => `<button class="history-row" data-chat="${person.handle}">${avatarMarkup(person)}<span class="history-copy"><strong>${person.name}</strong><small>${index % 2 ? "The moodboard is looking so good ✨" : "Lets def go again. Best spa in the city!"}</small></span><span class="history-time">${index + 1}d ago</span><span class="history-arrow">→</span></button>`).join("")}</div><article class="upgrade-banner"><div><span class="eyebrow">Premium archive</span><h2>Keep every conversation.</h2><p>Free accounts can keep five past chats. Upgrade to unlock unlimited history and never lose your favorite thread.</p></div><button class="button button-dark" data-action="upgrade">Upgrade for unlimited</button></article></section>`;
+}
 
-audioCallButton.addEventListener("click", () => startCall("Audio"));
-videoCallButton.addEventListener("click", () => startCall("Video"));
+function renderPlaceholder(title, label, copy) {
+  appView.innerHTML = `<section class="page-view centered-view"><span class="placeholder-mark">+</span><span class="eyebrow">${label}</span><h1>${title}</h1><p>${copy}</p><button class="button button-dark" data-action="toast" data-message="This area is coming soon">Notify me when it is ready</button></section>`;
+}
 
-renderHeader();
-renderMessages();
+function renderSettings() {
+  appView.innerHTML = `<section class="page-view"><div class="page-heading"><div><a class="back-to-messages" href="#home">‹ Back to messages</a><span class="eyebrow">Conversation controls</span><h1>Settings</h1><p>Set the skill level for both sides of the conversation.</p></div><div class="heading-actions"><button class="button button-light" data-action="toggle-mobile">▣ Mobile view</button><button class="button button-purple" data-action="save-settings">Save changes</button></div></div><div class="settings-layout"><div class="settings-main"><div class="settings-section"><div class="settings-title"><h2>Conversation difficulty</h2><span class="difficulty-value" id="difficulty-value">Balanced</span></div><div class="difficulty-bars"><label class="difficulty-bar"><span><strong>Your look</strong><small id="your-look-value">5 / 10</small></span><input id="your-look-range" class="range-input" type="range" min="1" max="10" value="5" aria-label="Your look skill" /><div class="range-labels"><span>1 · Simple</span><span>10 · Complex</span></div></label><label class="difficulty-bar"><span><strong>Their look</strong><small id="their-look-value">5 / 10</small></span><input id="their-look-range" class="range-input" type="range" min="1" max="10" value="5" aria-label="Their look skill" /><div class="range-labels"><span>1 · Simple</span><span>10 · Complex</span></div></label></div><p class="setting-help">The difference between the two 10-point skill bars sets how challenging the conversation feels.</p></div></div><aside class="settings-preview"><span class="eyebrow">Live preview</span>${avatarMarkup(characters[0])}<h2>Teresa Lai</h2><span class="handle">@teresalai_</span><div class="preview-bubble incoming">What should we get into today?</div><div class="preview-bubble outgoing">Something a little unexpected.</div><button class="text-button" data-action="toast" data-message="Preview updated">Preview conversation <span>→</span></button></aside></div></section>`;
+  
+  const updateDifficulty = () => { const your = Number(document.querySelector("#your-look-range").value); const their = Number(document.querySelector("#their-look-range").value); const difference = Math.abs(your - their); document.querySelector("#your-look-value").textContent = `${your} / 5`; document.querySelector("#their-look-value").textContent = `${their} / 5`; document.querySelector("#difficulty-value").textContent = difference === 0 ? "Balanced" : difference <= 1 ? "Moderate" : difference <= 3 ? "Challenging" : "Expert"; };
+  appView.querySelectorAll(".range-input").forEach((input) => input.addEventListener("input", updateDifficulty));
+}
+
+function renderChat(character) {
+  appView.innerHTML = `<section class="chat-panel full-chat"><header class="chat-header"><a href="#home" class="icon-button back-button" aria-label="Back to characters">‹</a><div class="chat-person">${avatarMarkup(character)}<span><span class="chat-name">${character.name}</span><span class="chat-handle">@${character.handle}</span></span></div><div class="chat-actions"><button class="icon-button" data-action="call" aria-label="Start audio call"><svg class="header-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3.1 5.18 2 2 0 0 1 5.1 3h3a2 2 0 0 1 2 1.72c.12.9.33 1.78.62 2.63a2 2 0 0 1-.45 2.11L9 10.73a16 16 0 0 0 4.27 4.27l1.27-1.27a2 2 0 0 1 2.11-.45c.85.29 1.73.5 2.63.62A2 2 0 0 1 21 15.9z"/></svg></button><button class="icon-button" data-action="call" aria-label="Start video call"><svg class="header-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg></button><a class="icon-button" href="#settings" aria-label="Chat settings"><svg class="header-svg gear-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6z"/><path d="m19.4 15 .1.1-1.7 2.9-.2-.1a2.1 2.1 0 0 0-2.2 0l-.1.1a2.1 2.1 0 0 0-1 1.8v.2H11v-.2a2.1 2.1 0 0 0-1-1.8l-.1-.1a2.1 2.1 0 0 0-2.2 0l-.2.1-1.7-2.9.1-.1a2.1 2.1 0 0 0 1.1-1.9v-.2a2.1 2.1 0 0 0-1.1-1.9l-.1-.1 1.7-2.9.2.1a2.1 2.1 0 0 0 2.2 0l.1-.1a2.1 2.1 0 0 0 1-1.8V5h3.3v.2a2.1 2.1 0 0 0 1 1.8l.1.1a2.1 2.1 0 0 0 2.2 0l.2-.1 1.7 2.9-.1.1a2.1 2.1 0 0 0-1.1 1.9v.2a2.1 2.1 0 0 0 1.1 1.9z"/></svg></a><button class="icon-button" data-action="info" aria-label="Conversation info"><svg class="header-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 10.7v5.2M12 7.7h.01"/></svg></button></div></header><div class="chat-body"><div class="date-divider">Today</div>${messages.map((message) => `<div class="message-row ${message.from === "me" ? "sent" : "received"}">${message.from === "them" ? avatarMarkup(character, "message-avatar") : ""}<div class="message-stack"><span class="message-bubble">${message.text}</span>${message.reaction ? `<span class="message-reaction">${message.reaction}</span>` : ""}${message.status ? `<span class="message-status">${message.status}</span>` : ""}</div></div>`).join("")}</div><form class="message-composer"><button type="button" class="composer-icon camera-button" aria-label="Open camera"><span></span></button><input type="text" placeholder="Message..." aria-label="Message text" /><button type="button" class="emoji-button" aria-label="Open emoji picker">☺</button><div class="emoji-picker" hidden><button type="button">😀</button><button type="button">😂</button><button type="button">🥰</button><button type="button">🔥</button><button type="button">✨</button><button type="button">👍</button></div><button type="submit" class="send-button">Send</button></form></section>`;
+  const form = appView.querySelector("form"); const input = form.querySelector("input");
+  input.addEventListener("input", () => form.classList.toggle("has-text", input.value.trim().length > 0));
+  const emojiButton = form.querySelector(".emoji-button"); const emojiPicker = form.querySelector(".emoji-picker"); emojiButton.addEventListener("click", () => { emojiPicker.hidden = !emojiPicker.hidden; }); emojiPicker.querySelectorAll("button").forEach((button) => button.addEventListener("click", () => { input.value += button.textContent; input.focus(); form.classList.add("has-text"); emojiPicker.hidden = true; }));
+  form.addEventListener("submit", (event) => { event.preventDefault(); if (input.value.trim()) { const row = document.createElement("div"); row.className = "message-row sent"; row.innerHTML = `<div class="message-stack"><span class="message-bubble"></span><span class="message-status">Sent</span></div>`; row.querySelector(".message-bubble").textContent = input.value.trim(); appView.querySelector(".chat-body").append(row); input.value = ""; form.classList.remove("has-text"); appView.querySelector(".chat-body").scrollTop = 9999; } });
+}
+
+function route() { const routeName = location.hash.slice(1) || "home"; renderShell(routeName); if (routeName === "home") renderHome(); else if (routeName === "history") renderHistory(); else if (routeName === "settings") renderSettings(); else if (routeName === "chat") renderChat(characters[0]); else renderPlaceholder(routeName === "discover" ? "Find your next conversation" : "Coming soon", routeName, "This part of SaveTheConvo is being shaped now."); }
+document.addEventListener("click", (event) => { const action = event.target.closest("[data-action]")?.dataset.action; const chatHandle = event.target.closest("[data-chat]")?.dataset.chat; const addHandle = event.target.closest("[data-add-bot]")?.dataset.addBot; const removeHandle = event.target.closest("[data-remove-bot]")?.dataset.removeBot; if (addHandle) { if (addedBotHandles.has(addHandle)) { addedBotHandles.delete(addHandle); showToast("Bot removed from your messages"); } else { addedBotHandles.add(addHandle); showToast("Bot added to your messages"); } localStorage.setItem("savetheconvo-added-bots", JSON.stringify([...addedBotHandles])); renderHome(); renderShell("home"); return; } if (removeHandle) { addedBotHandles.delete(removeHandle); localStorage.setItem("savetheconvo-added-bots", JSON.stringify([...addedBotHandles])); showToast("Bot removed from your messages"); renderHome(); renderShell("home"); return; } if (chatHandle) { const character = characters.find((item) => item.handle === chatHandle) || characters[0]; renderChat(character); renderShell("chat"); history.replaceState(null, "", "#chat"); } if (action === "toggle-mobile" || action === "exit-mobile") { const enabled = action === "toggle-mobile" ? !document.body.classList.contains("mobile-preview") : false; document.body.classList.toggle("mobile-preview", enabled); document.querySelector("#mobile-exit")?.remove(); if (enabled) { const exit = document.createElement("button"); exit.id = "mobile-exit"; exit.className = "mobile-exit"; exit.dataset.action = "exit-mobile"; exit.textContent = "Exit mobile view"; document.body.append(exit); } showToast(enabled ? "Mobile view enabled" : "Desktop view enabled"); } if (action === "info") showToast("Conversation info is ready"); if (action === "open-bot-picker") showToast("Choose a bot from the circles above"); if (action === "upgrade") showToast("Premium checkout is coming soon"); if (action === "call") showToast("Call UI is ready for the AI model hookup"); if (action === "toast") showToast(event.target.closest("[data-action]").dataset.message); if (action === "save-settings") showToast("Chat settings saved"); });
+window.addEventListener("hashchange", route); route();
