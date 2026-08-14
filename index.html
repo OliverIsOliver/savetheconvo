@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fafafa" />
-    <title>Messages — SaveTheConvo</title>
+    <title>Practice texting — SaveTheConvo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
@@ -12,19 +12,62 @@
   </head>
   <body>
     <div class="app-shell">
-      <main class="messages-layout">
-        <section class="chat-panel" aria-label="Conversation">
+      <main class="messages-layout" aria-label="SaveTheConvo practice session">
+        <section class="chat-panel" aria-label="Conversation with Tiffany">
           <header class="chat-header">
             <div id="chat-person" class="chat-person"></div>
+            <button id="inspect-button" class="inspect-button" type="button" aria-haspopup="dialog">Prompts</button>
           </header>
-          <div id="chat-body" class="chat-body"></div>
+
+          <section class="practice-controls" aria-label="Practice setup">
+            <div class="controls-heading">
+              <span>Practice setup</span>
+              <span id="score-summary" class="score-summary">You 5 · Tiffany 5</span>
+            </div>
+            <p class="controls-note">A fictional social signal that changes how easily the flirting lands.</p>
+            <div class="score-row">
+              <label for="user-score">Your attractiveness <output id="user-score-value" for="user-score">5/10</output></label>
+              <input id="user-score" type="range" min="0" max="10" step="1" value="5" />
+            </div>
+            <div class="score-row">
+              <label for="her-score">Tiffany’s attractiveness <output id="her-score-value" for="her-score">5/10</output></label>
+              <input id="her-score" type="range" min="0" max="10" step="1" value="5" />
+            </div>
+          </section>
+
+          <div id="chat-body" class="chat-body" aria-live="polite"></div>
+          <div id="typing-indicator" class="typing-indicator" aria-live="polite">Tiffany is typing<span>···</span></div>
           <form id="message-form" class="message-composer">
-            <input id="message-input" type="text" placeholder="Message..." autocomplete="off" aria-label="Message text" />
+            <input id="message-input" type="text" placeholder="Message Tiffany..." autocomplete="off" aria-label="Message Tiffany" maxlength="1200" />
             <button type="submit" id="send-button" class="send-button">Send</button>
           </form>
         </section>
       </main>
     </div>
+
+    <dialog id="prompt-dialog" class="prompt-dialog" aria-labelledby="prompt-dialog-title">
+      <form method="dialog" class="prompt-dialog-card">
+        <div class="prompt-dialog-header">
+          <div>
+            <p class="eyebrow">Transparent roleplay</p>
+            <h2 id="prompt-dialog-title">Prompt inspector</h2>
+          </div>
+          <button class="dialog-close" value="close" aria-label="Close prompt inspector">×</button>
+        </div>
+        <p class="prompt-dialog-intro">The system prompt stays stable. The dynamic prompt is rebuilt with your scores and latest transcript every turn.</p>
+        <div class="prompt-tabs" role="tablist" aria-label="Prompt layers">
+          <button class="prompt-tab active" type="button" role="tab" aria-selected="true" data-prompt-tab="system">System prompt</button>
+          <button class="prompt-tab" type="button" role="tab" aria-selected="false" data-prompt-tab="dynamic">Dynamic prompt</button>
+        </div>
+        <section id="system-prompt-panel" class="prompt-panel" role="tabpanel">
+          <pre id="system-prompt" class="prompt-code">Loading...</pre>
+        </section>
+        <section id="dynamic-prompt-panel" class="prompt-panel" role="tabpanel" hidden>
+          <pre id="dynamic-prompt" class="prompt-code">Loading...</pre>
+        </section>
+      </form>
+    </dialog>
+
     <div id="toast" class="toast" role="status"></div>
     <script src="app.js"></script>
   </body>
