@@ -4,71 +4,72 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#fafafa" />
-    <title>Practice texting — SaveTheConvo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+    <title>SaveTheConvo</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="app-shell">
       <main class="messages-layout" aria-label="SaveTheConvo practice session">
         <section class="chat-panel" aria-label="Conversation with Tiffany">
-          <header class="chat-header">
-            <div id="chat-person" class="chat-person"></div>
-            <button id="inspect-button" class="inspect-button" type="button" aria-haspopup="dialog">Prompts</button>
-          </header>
-
-          <section class="practice-controls" aria-label="Practice setup">
-            <div class="controls-heading">
-              <span>Practice setup</span>
-              <span id="score-summary" class="score-summary">You 5 · Tiffany 5</span>
-            </div>
-            <p class="controls-note">A fictional social signal that changes how easily the flirting lands.</p>
-            <div class="score-row">
-              <label for="user-score">Your attractiveness <output id="user-score-value" for="user-score">5/10</output></label>
-              <input id="user-score" type="range" min="0" max="10" step="1" value="5" />
-            </div>
-            <div class="score-row">
-              <label for="her-score">Tiffany’s attractiveness <output id="her-score-value" for="her-score">5/10</output></label>
-              <input id="her-score" type="range" min="0" max="10" step="1" value="5" />
+          <section id="chat-list-view" class="chat-list-view" hidden aria-label="Your chats">
+            <header class="chat-list-header"><h1>SaveTheConvo</h1></header>
+            <div class="chat-list">
+              <button class="chat-list-item" type="button" data-person="tiffany.lane"><span class="avatar avatar-tiffany"><img src="assets/tiffany-profile.png" alt="" /></span><span><strong>Tiffany</strong><small>tiffany.lane</small></span></button>
+              <button class="chat-list-item" type="button" data-person="emma.rose"><span class="avatar avatar-emma"><img src="assets/emma-profile.png" alt="" /></span><span><strong>Emma</strong><small>emma.rose</small></span></button>
+              <button class="chat-list-item" type="button" data-person="lucia.vibes"><span class="avatar avatar-lucia"><img src="assets/lucia-profile.png" alt="" /></span><span><strong>Lucia</strong><small>lucia.vibes</small></span></button>
             </div>
           </section>
+          <div id="chat-view" class="chat-view">
+            <header class="chat-header">
+              <div class="chat-header-left">
+                <button id="chat-back" class="back-button" type="button" aria-label="Back to chats"><svg aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path></svg></button>
+                <div id="chat-person" class="chat-person"></div>
+              </div>
+              <div class="header-actions" aria-label="Conversation actions">
+                <button class="header-action" type="button" data-action="phone" aria-label="Call"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M18.227 22.912c-4.913 0-9.286-3.627-11.486-5.828C4.486 14.83.731 10.291.921 5.231a3.289 3.289 0 0 1 .908-2.138 17.116 17.116 0 0 1 1.865-1.71 2.307 2.307 0 0 1 3.004.174 13.283 13.283 0 0 1 3.658 5.325 2.551 2.551 0 0 1-.19 1.941l-.455.853a.463.463 0 0 0-.024.387 7.57 7.57 0 0 0 4.077 4.075.455.455 0 0 0 .386-.024l.853-.455a2.548 2.548 0 0 1 1.94-.19 13.278 13.278 0 0 1 5.326 3.658 2.309 2.309 0 0 1 .174 3.003 17.319 17.319 0 0 1-1.71 1.866 3.29 3.29 0 0 1-2.138.91 10.27 10.27 0 0 1-.368.006Zm-13.144-20a.27.27 0 0 0-.167.054A15.121 15.121 0 0 0 3.28 4.47a1.289 1.289 0 0 0-.36.836c-.161 4.301 3.21 8.34 5.235 10.364s6.06 5.403 10.366 5.236a1.284 1.284 0 0 0 .835-.36 15.217 15.217 0 0 0 1.504-1.637.324.324 0 0 0-.047-.41 11.62 11.62 0 0 0-4.457-3.119.545.545 0 0 0-.411.044l-.854.455a2.452 2.452 0 0 1-2.071.116 9.571 9.571 0 0 1-5.189-5.188 2.457 2.457 0 0 1 .115-2.071l.456-.855a.544.544 0 0 0 .043-.41 11.629 11.629 0 0 0-3.118-4.458.36.36 0 0 0-.244-.1Z"></path></svg></button>
+                <button class="header-action" type="button" data-action="video" aria-label="Video call"><svg aria-hidden="true" fill="none" viewBox="0 0 24 24"><rect x="2.5" y="5" width="15" height="14" rx="3" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></rect><path d="m17.999 9.146 2.495-2.256A1.5 1.5 0 0 1 23 8.003v7.994a1.5 1.5 0 0 1-2.506 1.113L18 14.854" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+                <button class="header-action" type="button" data-action="info" aria-label="Conversation information"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><circle cx="12.001" cy="12.005" fill="none" r="10.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></circle><circle cx="11.819" cy="7.709" r="1.25"></circle><line fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x1="10.569" x2="13.432" y1="16.777" y2="16.777"></line><polyline fill="none" points="10.569 11.05 12 11.05 12 16.777" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polyline></svg></button>
+              </div>
+            </header>
 
-          <div id="chat-body" class="chat-body" aria-live="polite"></div>
-          <div id="typing-indicator" class="typing-indicator" aria-live="polite">Tiffany is typing<span>···</span></div>
-          <form id="message-form" class="message-composer">
-            <input id="message-input" type="text" placeholder="Message Tiffany..." autocomplete="off" aria-label="Message Tiffany" maxlength="1200" />
-            <button type="submit" id="send-button" class="send-button">Send</button>
-          </form>
+            <div id="chat-body" class="chat-body" aria-live="polite"></div>
+            <div id="typing-indicator" class="typing-indicator" aria-live="polite"><span class="typing-bubble"><i></i><i></i><i></i></span></div>
+            <form id="message-form" class="message-composer">
+              <button id="emoji-button" class="composer-icon" type="button" aria-label="Open emoji picker"><svg aria-hidden="true" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2"></circle><circle cx="8.5" cy="11.5" r="1.15" fill="currentColor"></circle><circle cx="15.5" cy="11.5" r="1.15" fill="currentColor"></circle><path d="M8.8 15.3c1.7 2.1 4.7 2.1 6.4 0" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path></svg></button>
+              <input id="message-input" type="text" placeholder="Message..." autocomplete="off" aria-label="Message Tiffany" maxlength="1200" />
+              <button type="submit" id="send-button" class="send-button" aria-label="Send message"><svg aria-hidden="true" fill="currentColor" viewBox="0 0 24 24"><path d="M22.513 3.576C21.826 2.552 20.617 2 19.384 2H4.621c-1.474 0-2.878.818-3.46 2.173-.6 1.398-.297 2.935.784 3.997l3.359 3.295a1 1 0 0 0 1.195.156l8.522-4.849a1 1 0 1 1 .988 1.738l-8.526 4.851a1 1 0 0 0-.477 1.104l1.218 5.038c.343 1.418 1.487 2.534 2.927 2.766.208.034.412.051.616.051 1.26 0 2.401-.644 3.066-1.763l7.796-13.118a3.572 3.572 0 0 0-.116-3.863Z"></path></svg></button>
+            </form>
+            <div id="emoji-picker" class="emoji-picker" hidden aria-label="Emoji picker">
+              <button type="button" data-emoji="😀">😀</button><button type="button" data-emoji="😂">😂</button><button type="button" data-emoji="🤣">🤣</button><button type="button" data-emoji="😭">😭</button><button type="button" data-emoji="😍">😍</button><button type="button" data-emoji="🥹">🥹</button><button type="button" data-emoji="😅">😅</button><button type="button" data-emoji="😏">😏</button><button type="button" data-emoji="😉">😉</button><button type="button" data-emoji="😎">😎</button><button type="button" data-emoji="🤓">🤓</button><button type="button" data-emoji="🤭">🤭</button><button type="button" data-emoji="🫠">🫠</button><button type="button" data-emoji="😮‍💨">😮‍💨</button><button type="button" data-emoji="🤔">🤔</button><button type="button" data-emoji="🙄">🙄</button><button type="button" data-emoji="😳">😳</button><button type="button" data-emoji="🥰">🥰</button><button type="button" data-emoji="😘">😘</button><button type="button" data-emoji="😇">😇</button><button type="button" data-emoji="🤗">🤗</button><button type="button" data-emoji="❤️">❤️</button><button type="button" data-emoji="💔">💔</button><button type="button" data-emoji="❤️‍🩹">❤️‍🩹</button><button type="button" data-emoji="✨">✨</button><button type="button" data-emoji="🔥">🔥</button><button type="button" data-emoji="💯">💯</button><button type="button" data-emoji="🎉">🎉</button><button type="button" data-emoji="👍">👍</button><button type="button" data-emoji="👎">👎</button><button type="button" data-emoji="👏">👏</button><button type="button" data-emoji="🙌">🙌</button><button type="button" data-emoji="🤞">🤞</button><button type="button" data-emoji="🫶">🫶</button><button type="button" data-emoji="🙏">🙏</button><button type="button" data-emoji="💀">💀</button>
+            </div>
+          </div>
+
+          <section id="settings-page" class="settings-page" hidden aria-label="Info">
+            <header class="settings-header">
+              <button id="settings-back" class="back-button settings-back" type="button" aria-label="Back to conversation"><svg aria-hidden="true" fill="none" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path></svg></button>
+              <h1>Info</h1>
+              <span class="settings-spacer"></span>
+            </header>
+            <div class="settings-content">
+              <p class="settings-intro">Adjust the fictional social signals that shape how easily the flirting lands.</p>
+              <div class="controls-heading"><span>Scores</span><span id="score-summary" class="score-summary">You 5 · Tiffany 5</span></div>
+              <div class="score-row"><label for="user-score">Your attractiveness <output id="user-score-value" for="user-score">5/10</output></label><input id="user-score" type="range" min="0" max="10" step="1" value="5" /></div>
+              <div class="score-row"><label for="her-score">Tiffany’s attractiveness <output id="her-score-value" for="her-score">5/10</output></label><input id="her-score" type="range" min="0" max="10" step="1" value="5" /></div>
+              <div class="prompt-section">
+                <div class="prompt-heading">Prompts</div>
+                <div class="prompt-tabs" role="tablist" aria-label="Prompt layers">
+                  <button class="prompt-tab active" type="button" role="tab" aria-selected="true" data-prompt-tab="system">System</button>
+                  <button class="prompt-tab" type="button" role="tab" aria-selected="false" data-prompt-tab="dynamic">Dynamic</button>
+                </div>
+                <pre id="system-prompt" class="prompt-code">Loading...</pre>
+                <pre id="dynamic-prompt" class="prompt-code" hidden>Loading...</pre>
+              </div>
+            </div>
+          </section>
         </section>
       </main>
     </div>
-
-    <dialog id="prompt-dialog" class="prompt-dialog" aria-labelledby="prompt-dialog-title">
-      <form method="dialog" class="prompt-dialog-card">
-        <div class="prompt-dialog-header">
-          <div>
-            <p class="eyebrow">Transparent roleplay</p>
-            <h2 id="prompt-dialog-title">Prompt inspector</h2>
-          </div>
-          <button class="dialog-close" value="close" aria-label="Close prompt inspector">×</button>
-        </div>
-        <p class="prompt-dialog-intro">The system prompt stays stable. The dynamic prompt is rebuilt with your scores and latest transcript every turn.</p>
-        <div class="prompt-tabs" role="tablist" aria-label="Prompt layers">
-          <button class="prompt-tab active" type="button" role="tab" aria-selected="true" data-prompt-tab="system">System prompt</button>
-          <button class="prompt-tab" type="button" role="tab" aria-selected="false" data-prompt-tab="dynamic">Dynamic prompt</button>
-        </div>
-        <section id="system-prompt-panel" class="prompt-panel" role="tabpanel">
-          <pre id="system-prompt" class="prompt-code">Loading...</pre>
-        </section>
-        <section id="dynamic-prompt-panel" class="prompt-panel" role="tabpanel" hidden>
-          <pre id="dynamic-prompt" class="prompt-code">Loading...</pre>
-        </section>
-      </form>
-    </dialog>
-
     <div id="toast" class="toast" role="status"></div>
-    <script src="app.js"></script>
+    <script type="module" src="dist/app.js"></script>
   </body>
 </html>

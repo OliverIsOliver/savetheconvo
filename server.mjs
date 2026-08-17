@@ -12,10 +12,12 @@ import {
   normalizeChatRequest,
   promptPreview
 } from "./prompts.mjs";
+import { normalizeVideoRequest, videoPeoplePayload } from "./video/contract.mjs";
 
 const rootDirectory = fileURLToPath(new URL(".", import.meta.url));
 const port = Number(process.env.PORT || 4173);
 const openai = process.env.OPENAI_API_KEY ? new OpenAI() : null;
+let videoRendererPromise;
 
 const replySchema = {
   type: "object",
@@ -42,6 +44,16 @@ function sendJson(response, status, payload) {
 
 function sendError(response, status, message) {
   sendJson(response, status, { error: message });
+}
+
+function sendVideo(response, payload, personId) {
+  response.writeHead(200, {
+    "content-type": "video/mp4",
+    "content-length": payload.length,
+    "content-disposition": `attachment; filename="save-the-convo-${personId}.mp4"`,
+    "cache-control": "no-store"
+  });
+  response.end(payload);
 }
 
 async function readJson(request) {
@@ -92,6 +104,10 @@ async function handleApi(request, response, url) {
     }));
   }
 
+  if (request.method === "GET" && url.pathname === "/api/video/people") {
+    return sendJson(response, 200, { people: videoPeoplePayload() });
+  }
+
   if (request.method !== "POST") return sendError(response, 405, "Method not allowed.");
 
   let body;
@@ -107,6 +123,25 @@ async function handleApi(request, response, url) {
       return sendJson(response, 200, promptPreview(requestData));
     } catch (error) {
       return sendError(response, 400, error.message);
+    }
+  }
+
+  if (url.pathname === "/api/video") {
+    let requestData;
+    try {
+      requestData = normalizeVideoRequest(body);
+    } catch (error) {
+      return sendError(response, 400, error.message);
+    }
+
+    try {
+      videoRendererPromise ??= import("./video/render.mjs");
+      const { renderConversationVideo } = await videoRendererPromise;
+      const video = await renderConversationVideo(requestData);
+      return sendVideo(response, video, requestData.personId);
+    } catch (error) {
+      console.error("Video render failed:", error?.stack || error);
+      return sendError(response, 500, "Could not render the conversation video. Check the server log for details.");
     }
   }
 
@@ -195,7 +230,7 @@ const server = http.createServer(async (request, response) => {
   await serveStatic(response, url);
 });
 
-server.listen(port, () => {
+server.listen(port, "0.0.0.0", () => {
   console.log(`SaveTheConvo listening at http://localhost:${port}`);
   console.log(`Model: ${MODEL} · Tiffany: ${PERSONA.description}`);
   if (!openai) console.log("OPENAI_API_KEY is not set; /api/chat will return a configuration error.");
